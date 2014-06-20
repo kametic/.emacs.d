@@ -35,6 +35,7 @@
 
 ;; Show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
+(setq-default show-trailing-whitespace t)
 
 ;; Allow recursive minibuffers
 (setq enable-recursive-minibuffers t)
@@ -189,6 +190,11 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+
+
+;; HOOKS 
+
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
 ; From http://stackoverflow.com/questions/885793/emacs-error-when-calling-server-start#1566618
 ; to remove directory unsafe message
