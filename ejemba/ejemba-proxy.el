@@ -4,7 +4,7 @@
 
 ;(setq url-proxy-services '(("no_proxy" . "host")
 ;                           ("http" . "")
-;                           ("https" . "http.internetpsa.inetpsa.com:80"))
+;                           ("https" . ""))
 ;)
 ;
 ;(setq url-http-proxy-basic-auth-storage
