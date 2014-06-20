@@ -25,7 +25,7 @@
 
 ;; Remove text in active region if inserting text
 (delete-selection-mode 1)
-
+01 77 68 30 30
 ;; Save minibuffer history
 (savehist-mode 1)
 (setq history-length 1000)
