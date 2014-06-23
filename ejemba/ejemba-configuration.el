@@ -18,14 +18,16 @@
       truncate-partial-width-windows nil)
 
 ;; Highlight current line
-(global-hl-line-mode 1)
+;(global-hl-line-mode 1)
 
 ;; Font configuration
 (global-font-lock-mode 1)
 
+
+
 ;; Remove text in active region if inserting text
 (delete-selection-mode 1)
-01 77 68 30 30
+
 ;; Save minibuffer history
 (savehist-mode 1)
 (setq history-length 1000)
@@ -52,7 +54,7 @@
 
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
-
+(setq show-paren-style 'expression) ; highlight entire bracket expression
 (show-paren-mode 1)
 ;(electric-pair-mode 1)
 (transient-mark-mode t)
@@ -60,7 +62,7 @@
 (global-auto-revert-mode 1)
 (global-set-key [f4] 'keyboard-escape-quit)
                                         ;
-; UI 
+; UI
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -72,12 +74,125 @@
 (bind-key "<RET>" 'newline-and-indent)
 (bind-key "<C-return>" 'newline)
 
-;; 
-(use-package  undo-tree :init
+; Set up keybindings for `windmove'.
+; Keybindings are of the form MODIFIER-{left,right,up,down}.
+; Default MODIFIER is 'shift.
+(windmove-default-keybindings)
+
+;
+; USE-PACKAGE section
+; :init is always executed but :config will happen after
+; :bind, commands: are defered
+;  usage of
+;
+;(use-package ruby-mode
+;  :mode "\\.rb\\'"
+;  :interpreter "ruby")
+;
+;;; The package is "python" but the mode is "python-mode":
+;(use-package python
+;  :mode ("\\.py\\'" . python-mode)
+;  :interpreter ("python" . python-mode))
+
+(use-package haskell-mode
+  :commands haskell-mode
+  :init ; add extension 
+  (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
+  :config ; defer loading
+  (progn
+    (use-package inf-haskell)
+    (use-package hs-lint)))
+
+(use-package key-chord
+  :bind ("C-c n k" . key-chord-mode)
+  :init (key-chord-mode 1)
+  :config
+  (progn
+    (key-chord-define-global "##" 'server-edit)
+    (key-chord-define-global "VV" 'other-window)
+    (key-chord-define-global "KK" 'ido-kill-buffer)
+    (key-chord-define-global "$$" 'ispell-buffer)
+    (key-chord-define-global "BB" 'helm-buffers-list)
+    ;; Pretty much everything in Enlish word beginning with 'q' is
+    ;; follewed the vowel 'u'.  These chords take advantage of that.
+    (key-chord-define-global "qq" 'read-only-mode)
+    (key-chord-define-global "qs" 'save-buffer)
+    (key-chord-define-global "q0" 'delete-window)
+    (key-chord-define-global "qf" 'flymake-popup-current-error-menu))
+  :ensure t
+  )
+
+;;
+(use-package  undo-tree
+  :init
   (global-undo-tree-mode)
   :ensure t)
 
+(use-package  icicles
+  :ensure t)
+
+(use-package  yasnippet
+  :idle
+  (yas-global-mode 1)
+  :ensure t)
+
+
+;;; Engine Mode:
+
+(use-package engine-mode
+  :commands (engine-mode defengine)
+  :init (engine-mode t)
+  :config
+  (progn
+    (defengine duckduckgo
+      "https://duckduckgo.com/?q=%s"
+      "C-c e d")
+    (defengine github
+      "https://github.com/search?ref=simplesearch&q=%s"
+      "C-c e g")
+    (defengine wikipedia
+      "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+      "C-c e w"))
+  :ensure t)
+
+(use-package recentf
+  :init
+  (progn
+    (recentf-mode 1)
+    ;(add-hook 'emacs-startup-hook 'recentf-open-files)
+    )
+  :bind ("<f9>" . recentf-open-files)
+  :ensure t)
+
+;;; howdoi:
+
+(use-package howdoi
+  :bind ("C-c x h" . howdoi)
+  :ensure t
+  )
+
+(use-package fuzzy
+  :ensure t)
+
+(use-package auto-complete
+  :idle (progn
+         (ac-config-default)
+         (ac-fuzzy-complete)
+         )
+  :ensure t)
+
 (use-package org :ensure t)
+
+(use-package imenu
+
+  :ensure t)
+
+;(use-package imenu+ :ensure t)
+
+(use-package imenu-anywhere
+  :init
+  (key-chord-define-global "MM" 'imenu-anywhere)
+  :ensure t)
 
 (use-package deft
   :init (progn
@@ -87,7 +202,6 @@
 	  (setq deft-extension "org")
 	  (setq deft-text-mode 'org-mode)
 	  (setq deft-use-filename-as-title t)
-	  
 	  )
   :ensure t)
 
@@ -96,9 +210,16 @@
 	 ("C-x C-f" . helm-find-files)
 	 )
   :init  (progn (helm-mode)
-                ( setq helm-buffers-fuzzy-matching t))
-  
+                (setq helm-buffers-fuzzy-matching t)
+                ;(fset 'list-packages 'helm-list-elisp-packages)
+                )
+
   :ensure t)
+
+(use-package ac-helm
+  :bind ("C-:" . ac-complete-with-helm)
+    :ensure t)
+
 (use-package helm-helm-commands :ensure t)
 (use-package helm-swoop
   :bind (("C-s" . helm-swoop))
@@ -122,7 +243,25 @@
 ;  :ensure t)
 ;
 
-;; IDO ;;;;;;;;;;;;;;;;;;;;;;;; 
+
+
+;; Expand Region
+;;; I use these packages to navigate and edit text in semantic terms,
+;;; with the Expand Region package being the foundation for the rest.
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region)
+  :config
+  (progn
+    (use-package change-inner 
+      :bind (("M-i" . change-inner)
+             ("M-o" . change-outer))
+      :ensure t )
+    )
+  :ensure t
+  )
+
+;; IDO ;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ido
   :init
   (progn
@@ -171,13 +310,13 @@
 	  )
   :ensure t)
 
-(use-package paredit-everywhere
-  :commands paredit-everywhere-mode
-  :init (progn
-	  (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
-	  ;(paredit-everywhere-mode) 
-	  )
-  :ensure t)
+;(use-package paredit-everywhere
+;  :commands paredit-everywhere-mode
+;  :init (progn
+;	  (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+;	  ;(paredit-everywhere-mode) 
+;	  )
+;  :ensure t)
 
 ;(use-package smartparens 
 ;  :init (progn 

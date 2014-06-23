@@ -21,6 +21,9 @@
 
 (load "ejemba-proxy")
 (load "ejemba-configuration")
+(load "ejemba-golang")
+(load "ejemba-web")
+(load "ejemba-functions")
 (when (equal window-system 'w32) 
   (load "ejemba-win32")
   )
