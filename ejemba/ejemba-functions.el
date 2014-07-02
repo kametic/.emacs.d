@@ -11,6 +11,16 @@
   (font-lock-fontify-buffer)
   )
 
+;C-a			;; 
+;TAB			;; 
+
+(defun ejemba/tab ()
+  "Tabulation"
+  (interactive)
+  (move-beginning-of-line 1)
+  (indent-for-tab-command)
+  )
+
 (defun ejemba/move-line-up ()
   "Move the current line up."
   (interactive)
@@ -34,6 +44,8 @@
 
 (bind-key "<C-d>" 'kill-whole-line)
 (key-chord-define-global "--" 'kill-whole-line)
+
+(bind-key "TAB" 'ejemba/tab)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

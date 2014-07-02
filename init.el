@@ -2,6 +2,31 @@
 (require 'package)
 (package-initialize)
 
+
+; copied from https://github.com/redguardtoo/emacs.d/blob/master/init.el
+;;----------------------------------------------------------------------------
+;; Which functionality to enable (use t or nil for true and false)
+;;----------------------------------------------------------------------------
+(setq *is-a-mac* (eq system-type 'darwin))
+(setq *is-carbon-emacs* (and *is-a-mac* (eq window-system 'mac)))
+(setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
+(setq *win32* (eq system-type 'windows-nt) )
+(setq *cygwin* (eq system-type 'cygwin) )
+(setq *linux* (or (eq system-type 'gnu/linux) (eq system-type 'linux)) )
+(setq *unix* (or *linux* (eq system-type 'usg-unix-v) (eq system-type 'berkeley-unix)) )
+(setq *linux-x* (and window-system *linux*) )
+(setq *xemacs* (featurep 'xemacs) )
+(setq *emacs23* (and (not *xemacs*) (or (>= emacs-major-version 23))) )
+(setq *emacs24* (and (not *xemacs*) (or (>= emacs-major-version 24))) )
+(setq *no-memory* (cond
+                   (*is-a-mac*
+                    (< (string-to-number (nth 1 (split-string (shell-command-to-string "sysctl hw.physmem")))) 4000000000))
+                   (*linux* nil)
+                   (t nil)
+                   ))
+
+
+
 ; Package repository
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -24,7 +49,7 @@
 (load "ejemba-golang")
 (load "ejemba-web")
 (load "ejemba-functions")
-(when (equal window-system 'w32) 
+(when (equal window-system 'w32)
   (load "ejemba-win32")
   )
 

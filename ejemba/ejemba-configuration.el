@@ -1,6 +1,9 @@
 (setq custom-file "~/.emacs.d/ejemba/emacs-custom.el")
 (load custom-file 'noerror)
 
+(global-set-key [f3] nil )
+;(global-set-key [f4] nil )
+
 ;; Changes all yes/no questions to y/n type
 ;(fset 'yes-or-no-p 'y-or-n-p)
 
@@ -20,10 +23,14 @@
 ;; Highlight current line
 ;(global-hl-line-mode 1)
 
+
+
+
 ;; Font configuration
 (global-font-lock-mode 1)
 
-
+; does not cut word on truncate line mode
+(global-visual-line-mode 1)
 
 ;; Remove text in active region if inserting text
 (delete-selection-mode 1)
@@ -94,15 +101,6 @@
 ;  :mode ("\\.py\\'" . python-mode)
 ;  :interpreter ("python" . python-mode))
 
-(use-package haskell-mode
-  :commands haskell-mode
-  :init ; add extension 
-  (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
-  :config ; defer loading
-  (progn
-    (use-package inf-haskell)
-    (use-package hs-lint)))
-
 (use-package key-chord
   :bind ("C-c n k" . key-chord-mode)
   :init (key-chord-mode 1)
@@ -118,9 +116,51 @@
     (key-chord-define-global "qq" 'read-only-mode)
     (key-chord-define-global "qs" 'save-buffer)
     (key-chord-define-global "q0" 'delete-window)
+    (key-chord-define-global "JJ" 'ace-jump-word-mode)
     (key-chord-define-global "qf" 'flymake-popup-current-error-menu))
   :ensure t
   )
+
+
+(use-package flycheck :ensure t)
+
+(use-package guide-key
+  :init (progn
+          (setq guide-key/guide-key-sequence '("C-c" "C-c ESC" "C-c /" "C-c n" "C-c x"
+                                               "C-x"  "C-x r" "C-x 4"))
+          (guide-key-mode 1))
+  :ensure t)
+
+(use-package ace-jump-mode
+  :bind (("C-c SPC" . ace-jump-word-mode)
+         ("C-c C-SPC" . ace-jump-word-mode))
+  :ensure t)
+
+(use-package haskell-mode
+  :commands haskell-mode
+  :init ; add extension 
+  (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
+  :config ; defer loading
+  (progn
+    (use-package inf-haskell)
+    (use-package hs-lint)))
+
+
+(use-package projectile
+  :init (progn
+          (projectile-global-mode)
+          (setq projectile-enable-caching t)
+          (add-to-list 'guide-key/guide-key-sequence "C-c p")
+          )
+  :ensure t)
+
+(use-package helm-projectile
+  :ensure t)
+
+(use-package magit
+  :bind ("C-c C-g" . magit-status)
+  :ensure t)
+
 
 ;;
 (use-package  undo-tree
@@ -131,10 +171,10 @@
 (use-package  icicles
   :ensure t)
 
-(use-package  yasnippet
-  :idle
-  (yas-global-mode 1)
-  :ensure t)
+;(use-package  yasnippet
+;  :idle
+;  (yas-global-mode 1)
+;  :ensure t)
 
 
 ;;; Engine Mode:
@@ -175,6 +215,7 @@
   :ensure t)
 
 (use-package auto-complete
+  :init (define-key ac-mode-map (kbd "C-TAB") 'auto-complete)
   :idle (progn
          (ac-config-default)
          (ac-fuzzy-complete)
@@ -191,7 +232,7 @@
 
 (use-package imenu-anywhere
   :init
-  (key-chord-define-global "MM" 'imenu-anywhere)
+  (key-chord-define-global "MM" 'helm-imenu)
   :ensure t)
 
 (use-package deft
