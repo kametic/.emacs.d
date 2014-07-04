@@ -322,14 +322,14 @@
     (ido-mode 1)
     (ido-everywhere 1)
     (setq ido-use-faces nil)
-    
+
     )
   :config
   (progn
     (use-package ido-vertical-mode
       :init (ido-vertical-mode 1)
       :ensure t)
-    
+
     )
   :ensure t
   )
@@ -350,7 +350,7 @@
 
 (use-package smex
   :bind (("M-x" . smex)
-	 
+
 	 ("M-m" . smex-major-mode-commands))
   :commands (smex-initialize)
   :ensure t
@@ -360,7 +360,7 @@
 ;  :mode ("\\.el" . paredit-mode)
   :init (progn
 	  (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
-	  
+ 
 	  )
   :ensure t)
 
