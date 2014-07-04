@@ -31,7 +31,7 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-;(package-refresh-contents)
+(package-refresh-contents)
 (when (not package-archive-contents)
   (package-refresh-contents))
 ;(if (not (package-installed-p 'use-package))

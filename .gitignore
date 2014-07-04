@@ -7,3 +7,6 @@
 /ac-comphist.dat
 /projectile.cache
 /projectile-bookmarks.eld
+/server/
+/ejemba/ejemba-proxy.el
+/ejemba/emacs-custom.el

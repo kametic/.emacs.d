@@ -161,6 +161,11 @@
   :bind ("C-c C-g" . magit-status)
   :ensure t)
 
+(use-package elisp-slime-nav
+  :bind (("C-;" . elisp-slime-nav-find-elisp-thing-at-point)
+         ("C-c C-d C-d" . elisp-slime-nav-describe-elisp-thing-at-point)
+         ("C-c C-d d" . elisp-slime-nav-describe-elisp-thing-at-point))
+  :ensure t)
 
 ;;
 (use-package  undo-tree
