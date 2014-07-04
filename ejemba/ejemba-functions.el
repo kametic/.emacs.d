@@ -50,6 +50,21 @@
   (forward-line -1)
   (indent-for-tab-command))
 
+(defun split-window-prefer-horizonally (window)
+  "If there's only one window (excluding any possibly active
+         minibuffer), then split the current window horizontally."
+  (split-window-right window)
+;  (if (and (one-window-p t)
+;           (not (active-minibuffer-window)))
+;      (let ((split-height-threshold nil))
+;        (split-window-sensibly window))
+;    (split-window-sensibly window))
+  )
+
+(setq split-window-preferred-function 'split-window-prefer-horizonally)
+
+;replacing (split-window-sensibly) ;
+
 (bind-key "<M-up>" 'ejemba/move-line-up)
 (key-chord-define-global "UU" 'ejemba/move-line-up)
 

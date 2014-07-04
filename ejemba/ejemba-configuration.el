@@ -23,8 +23,11 @@
 ;; Highlight current line
 ;(global-hl-line-mode 1)
 
-
-
+; Split horizontaly => one left one right
+; http://stackoverflow.com/questions/2081577/setting-emacs-split-to-horizontal
+(setq split-width-threshold 9999)
+;(setq split-height-threshold 100)
+;(setq split-width-threshold 100)
 
 ;; Font configuration
 (global-font-lock-mode 1)
@@ -257,6 +260,7 @@
 	 )
   :init  (progn (helm-mode)
                 (setq helm-buffers-fuzzy-matching t)
+                (setq helm-split-window-default-side 'right)
                 ;(fset 'list-packages 'helm-list-elisp-packages)
                 )
 
@@ -269,6 +273,10 @@
 (use-package helm-helm-commands :ensure t)
 (use-package helm-swoop
   :bind (("C-s" . helm-swoop))
+  :init (progn
+          ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+          (setq helm-swoop-split-direction 'split-window-horizontally)
+          )
   :ensure t)
 
 ;;; Show key-bindings for the current major mode:
