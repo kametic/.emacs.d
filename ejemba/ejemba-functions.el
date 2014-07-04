@@ -36,11 +36,28 @@
   (forward-line -1)
   (indent-according-to-mode))
 
+
+(defun ejemba/open-line-below ()
+  (interactive)
+  (end-of-line)
+  (newline)
+  (indent-for-tab-command))
+
+(defun ejemba/open-line-above ()
+  (interactive)
+  (beginning-of-line)
+  (newline)
+  (forward-line -1)
+  (indent-for-tab-command))
+
 (bind-key "<M-up>" 'ejemba/move-line-up)
 (key-chord-define-global "UU" 'ejemba/move-line-up)
 
 (bind-key "<M-down>" 'ejemba/move-line-down)
 (key-chord-define-global "DD" 'ejemba/move-line-down)
+
+(global-set-key (kbd "<C-return>") 'ejemba/open-line-below)
+(global-set-key (kbd "<C-S-return>") 'ejemba/open-line-above)
 
 (bind-key "<C-d>" 'kill-whole-line)
 (key-chord-define-global "--" 'kill-whole-line)
