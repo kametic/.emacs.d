@@ -61,7 +61,7 @@
 
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
-(setq show-paren-style 'expression) ; highlight entire bracket expression
+(setq show-paren-style 'mixed) ; parenthesis highlight entire bracket expression parenthesis
 (show-paren-mode 1)
 ;(electric-pair-mode 1)
 (transient-mark-mode t)
