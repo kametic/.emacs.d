@@ -61,7 +61,7 @@
 ;    (split-window-sensibly window))
   )
 
-(setq split-window-preferred-function 'split-window-prefer-horizonally)
+;(setq split-window-preferred-function 'split-window-prefer-horizonally)
 
 ;replacing (split-window-sensibly) ;
 

@@ -25,7 +25,7 @@
 
 ; Split horizontaly => one left one right
 ; http://stackoverflow.com/questions/2081577/setting-emacs-split-to-horizontal
-(setq split-width-threshold 9999)
+(setq split-width-threshold 0)
 ;(setq split-height-threshold 100)
 ;(setq split-width-threshold 100)
 
@@ -227,6 +227,7 @@
   :idle (progn
          (ac-config-default)
          (ac-fuzzy-complete)
+         (setq ac-auto-start 4)
          )
   :ensure t)
 
@@ -265,6 +266,8 @@
                 )
 
   :ensure t)
+
+(use-package helm-themes :ensure t)
 
 (use-package ac-helm
   :bind ("C-:" . ac-complete-with-helm)

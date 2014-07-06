@@ -39,8 +39,14 @@
 ; )
 
 
-(add-to-list 'load-path "~/.emacs.d/ejemba/bootstrap")
 (add-to-list 'load-path "~/.emacs.d/ejemba")
+(add-to-list 'load-path "~/.emacs.d/ejemba/bootstrap")
+; replace-colortheme is not in *elpa
+(add-to-list 'custom-theme-load-path "~/.emacs.d/ejemba/bootstrap/replace-colorthemes") 
+
+;; load your favorite theme
+(load-theme 'classic t t)
+(enable-theme 'classic)
 
 (require 'use-package)
 

@@ -4,7 +4,7 @@
             (setq tab-width 2)
             (setq standard-indent 2) 
             (setq indent-tabs-mode -1)
-            
+
             (add-hook 'go-mode-hook
                       (lambda () (add-hook 'before-save-hook 'gofmt-before-save)))
             (add-hook 'go-mode-hook
@@ -20,7 +20,7 @@
 
 ;; Go Oracle
 ;; http://yousefourabi.com/blog/2014/05/emacs-for-go/
-;; 
+;;
 
 ;; go get -u github.com/nsf/gocode
 (use-package go-eldoc
