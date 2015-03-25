@@ -61,6 +61,66 @@
 ;    (split-window-sensibly window))
   )
 
+
+(require 'hydra)
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+
+(require 'hydra-examples)
+(defhydra hydra-splitter (global-map "<f5>")
+  "slitter"
+  ("h" hydra-move-splitter-left "<-")
+  ("j" hydra-move-splitter-down "down")
+  ("k" hydra-move-splitter-up "up")
+  ("l" hydra-move-splitter-right "->"))
+
+
+
+
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-window ()
+   "window"
+   ("h" windmove-left)
+   ("j" windmove-down)
+   ("u" windmove-up)
+   ("k" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "ace")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("x" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("s" (lambda ()
+          (interactive)
+          (ace-window 4)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "swap")
+   ("d" (lambda ()
+          (interactive)
+          (ace-window 16)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "del")
+   ("o" delete-other-windows "1" :color blue)
+   ("i" ace-maximize-window "a1" :color blue)
+   ("q" nil "cancel")))
+
+
+
 ;(setq split-window-preferred-function 'split-window-prefer-horizonally)
 
 ;replacing (split-window-sensibly) ;

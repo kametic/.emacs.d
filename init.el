@@ -2,6 +2,8 @@
 (require 'package)
 (package-initialize)
 
+(exec-path-from-shell-initialize)
+
 
 ; copied from https://github.com/redguardtoo/emacs.d/blob/master/init.el
 ;;----------------------------------------------------------------------------
@@ -50,7 +52,7 @@
 
 (require 'use-package)
 
-(load "ejemba-proxy")
+;(load "ejemba-proxy")
 (load "ejemba-configuration")
 (load "ejemba-golang")
 (load "ejemba-web")
@@ -67,3 +69,4 @@
 ; paredit-everywhere
 
 ;ac-helm ou helm-company
+(put 'scroll-left 'disabled nil)

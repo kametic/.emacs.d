@@ -47,7 +47,7 @@
 
 ;; Show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
-(setq-default show-trailing-whitespace t)
+(setq-default show-trailing-whitespace nil)
 
 ;; Allow recursive minibuffers
 (setq enable-recursive-minibuffers t)
@@ -60,7 +60,16 @@
 (setq scroll-step 1)
 
 ;; do not make backup files
-(setq make-backup-files nil)
+;(setq make-backup-files nil)
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.emacs.d/saves"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; use versioned backups
+
 
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
@@ -124,13 +133,22 @@
   :ensure t
   )
 
+(use-package winner-mode-enable :ensure t)
+(winner-mode t)
+
+; revive to save buffer configuration
+; * save-current-configuration
+; * resume to resume
+(use-package revive :ensure t)
 
 (use-package flycheck :ensure t)
+
+(use-package hydra :ensure t); ++ 
 
 (use-package guide-key
   :init (progn
           (setq guide-key/guide-key-sequence '("C-c" "C-c ESC" "C-c /" "C-c n" "C-c x"
-                                               "C-x"  "C-x r" "C-x 4"))
+                                               "C-x"  "C-x r" "C-x 4" "<f2>"))
           (guide-key-mode 1))
   :ensure t)
 
@@ -138,6 +156,8 @@
   :bind (("C-c SPC" . ace-jump-word-mode)
          ("C-c C-SPC" . ace-jump-word-mode))
   :ensure t)
+
+(use-package ace-window :ensure t)
 
 (use-package haskell-mode
   :commands haskell-mode
@@ -155,14 +175,32 @@
           (setq projectile-enable-caching t)
           (add-to-list 'guide-key/guide-key-sequence "C-c p")
           )
+  :bind (
+         ("<f3>" . projectile-switch-project)
+         ("<f6>" . helm-projectile)
+         ("C-<f6>" . helm-projectile-switch-to-buffer)
+         )
   :ensure t)
 
 (use-package helm-projectile
   :ensure t)
 
+(use-package ibuffer-projectile
+  :ensure t)
+
+
+; https://github.com/sigma/magit-gh-pulls
 (use-package magit
   :bind ("C-c C-g" . magit-status)
+   
   :ensure t)
+
+(use-package magit-gh-pulls
+  :init (progn
+          (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+          )
+  :ensure t
+  )
 
 (use-package elisp-slime-nav
   :bind (("C-;" . elisp-slime-nav-find-elisp-thing-at-point)

@@ -1,21 +1,35 @@
+;;; ejemba-golang.el --- Elisp Golang configuration
+
+;;; Commentary:
+;;
+
+;;; Code:
+
 (use-package go-mode
   :mode ("\\.go" . go-mode)
   :config (progn
             (setq tab-width 2)
-            (setq standard-indent 2) 
+            (setq standard-indent 2)
             (setq indent-tabs-mode -1)
 
             (add-hook 'go-mode-hook
                       (lambda () (add-hook 'before-save-hook 'gofmt-before-save)))
+
+            (add-hook 'go-mode-hook 'flycheck-mode)
+
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
+
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c i") 'go-goto-imports)))
+
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "<f3>") 'godef-jump)))
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c C-c") 'go-errcheck)))
+
             )
+
   :ensure t)
 
 ;; Go Oracle
@@ -37,14 +51,14 @@
 (use-package go-errcheck
   :ensure t)
 
-; go direx 
+; go direx
 (use-package popwin ; needed by direx
   :init (popwin-mode 1)
   :ensure t)
 ; go get -u github.com/jimweirich/gotags
-; use rake 
+; use rake
 (use-package go-direx
-  :init 
+  :init
   :ensure t)
 
 ; go get github.com/golang/lint/golint
@@ -53,6 +67,7 @@
 
 ;(use-package go-snippets :ensure t)
 
+(global-flycheck-mode t)
 ; Flycheck
 ;(eval-after-load "go-mode"
 ;  '(progn
@@ -70,3 +85,7 @@
 ;  go-play            20120914.... available  Paste to play.golang.org
 ;  go-projectile      20140603.... available  Go add-ons for Projectile
 ;  golint             20140122.... available  lint for the Go source code
+
+(provide 'ejemba-golang)
+
+;;; ejemba-golang.el ends here
