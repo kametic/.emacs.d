@@ -128,7 +128,7 @@
     (key-chord-define-global "qq" 'read-only-mode)
     (key-chord-define-global "qs" 'save-buffer)
     (key-chord-define-global "q0" 'delete-window)
-    (key-chord-define-global "JJ" 'ace-jump-word-mode)
+    (key-chord-define-global "JJ" 'ace-jump-char-mode)
     (key-chord-define-global "qf" 'flymake-popup-current-error-menu))
   :ensure t
   )
@@ -176,11 +176,23 @@
           (add-to-list 'guide-key/guide-key-sequence "C-c p")
           )
   :bind (
-         ("<f3>" . projectile-switch-project)
+         ("<f3>" . helm-projectile-switch-project)
          ("<f6>" . helm-projectile)
+         ("C-o" . helm-projectile)
+         ("C-S-o" . helm-projectile-switch-to-buffer)
          ("C-<f6>" . helm-projectile-switch-to-buffer)
          )
   :ensure t)
+
+(use-package iflipb
+  
+  :bind (
+         ( "C-œ" . iflipb-next-buffer) 
+         ( "C-&" . iflipb-previous-buffer) 
+         )
+  
+  :ensure t)
+
 
 (use-package helm-projectile
   :ensure t)
@@ -192,7 +204,11 @@
 ; https://github.com/sigma/magit-gh-pulls
 (use-package magit
   :bind ("C-c C-g" . magit-status)
-   
+   :config
+
+   (progn
+     (setq magit-last-seen-setup-instructions "1.4.0")
+     )
   :ensure t)
 
 (use-package magit-gh-pulls
@@ -269,7 +285,11 @@
          )
   :ensure t)
 
-(use-package org :ensure t)
+(use-package org
+  :init
+    (org-indent-mode t)
+
+  :ensure t)
 
 (use-package imenu
 

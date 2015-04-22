@@ -11,3 +11,6 @@
 /ejemba/ejemba-proxy.el
 /ejemba/emacs-custom.el
 /ejemba/#emacs-custom.el#
+/eshell
+/session*
+/var

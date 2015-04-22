@@ -65,8 +65,15 @@
 (require 'hydra)
 (defhydra hydra-zoom (global-map "<f2>")
   "zoom"
-  ("g" text-scale-increase "in")
-  ("l" text-scale-decrease "out"))
+  ("=" text-scale-increase "in")
+  ("-" text-scale-decrease "out")
+  ; left right up down
+  ("k" left-char "Left")
+  ("m" right-char "Right")
+  ("o" previous-line "Up")
+  ("l" next-line   "Down")
+  ("<f2>" nil "cancel")
+  )
 
 (require 'hydra-examples)
 (defhydra hydra-splitter (global-map "<f5>")
@@ -121,6 +128,10 @@
 
 
 
+(defun switch-to-previous-buffer ()
+      (interactive)
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
+
 ;(setq split-window-preferred-function 'split-window-prefer-horizonally)
 
 ;replacing (split-window-sensibly) ;
@@ -138,6 +149,7 @@
 (key-chord-define-global "--" 'kill-whole-line)
 
 (bind-key "TAB" 'ejemba/tab)
+(bind-key "C-TAB" 'switch-to-previous-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

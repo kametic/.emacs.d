@@ -47,8 +47,10 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/ejemba/bootstrap/replace-colorthemes") 
 
 ;; load your favorite theme
-(load-theme 'classic t t)
-(enable-theme 'classic)
+;;(load-theme 'classic t t)
+;;(enable-theme 'classic)
+(load-theme 'calm-forest t t)
+(enable-theme 'calm-forest)
 
 (require 'use-package)
 
