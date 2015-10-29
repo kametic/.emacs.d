@@ -2,7 +2,7 @@
 (require 'package)
 (package-initialize)
 
-(exec-path-from-shell-initialize)
+;(exec-path-from-shell-initialize)
 
 
 ; copied from https://github.com/redguardtoo/emacs.d/blob/master/init.el

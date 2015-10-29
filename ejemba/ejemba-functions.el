@@ -128,6 +128,33 @@
 
 
 
+(fset 'ejemba/duplicate
+      (lambda (&optional arg) "Keyboard macro."
+        (interactive "p") (kmacro-exec-ring-item (quote ([1 11 25 C-return 25] 0 "%d")) arg)))
+
+;; http://rejeep.github.io/emacs/elisp/2010/03/11/duplicate-current-line-or-region-in-emacs.html
+(defun duplicate-current-line-or-region (arg)
+  "Duplicates the current line or region ARG times.
+If there's no region, the current line will be duplicated. However, if
+there's a region, all lines that region covers will be duplicated."
+  (interactive "p")
+  (let (beg end (origin (point)))
+    (if (and mark-active (> (point) (mark)))
+        (exchange-point-and-mark))
+    (setq beg (line-beginning-position))
+    (if mark-active
+        (exchange-point-and-mark))
+    (setq end (line-end-position))
+    (let ((region (buffer-substring-no-properties beg end)))
+      (dotimes (i arg)
+        (goto-char end)
+        (newline)
+        (insert region)
+        (setq end (point)))
+      (goto-char (+ origin (* (length region) arg) arg)))))
+
+
+
 (defun switch-to-previous-buffer ()
       (interactive)
       (switch-to-buffer (other-buffer (current-buffer) 1)))
@@ -139,17 +166,32 @@
 (bind-key "<M-up>" 'ejemba/move-line-up)
 (key-chord-define-global "UU" 'ejemba/move-line-up)
 
+(key-chord-define-global "ww" 'save-buffer )
+(key-chord-define-global "éé" 'duplicate-current-line-or-region )
+(key-chord-define-global "aa" 'beginning-of-line-text )
+(key-chord-define-global "ee" 'end-of-visual-line )
+(key-chord-define-global "mm" 'set-mark-command)
+
+(key-chord-define-global "JJ" 'left-char)
+(key-chord-define-global "LL" 'right-char)
+(key-chord-define-global "II" 'previous-line)
+(key-chord-define-global "KK" 'next-line)
+
 (bind-key "<M-down>" 'ejemba/move-line-down)
 (key-chord-define-global "DD" 'ejemba/move-line-down)
 
 (global-set-key (kbd "<C-return>") 'ejemba/open-line-below)
 (global-set-key (kbd "<C-S-return>") 'ejemba/open-line-above)
 
-(bind-key "<C-d>" 'kill-whole-line)
+(bind-key "<C-d>" 'ejemba/duplicate)
 (key-chord-define-global "--" 'kill-whole-line)
 
 (bind-key "TAB" 'ejemba/tab)
 (bind-key "C-TAB" 'switch-to-previous-buffer)
+
+(bind-key "<menu>" 'ace-jump-char-mode); this absolutly rocks rocks !
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -197,3 +239,53 @@ If the file is emacs lisp, run the byte compiled version if exist."
             )
         (message "No recognized program file suffix for this file.")
         ) ) ))
+
+
+(defun xah-open-file-at-cursor ()
+  "Open the file path under cursor.
+If there is text selection, uses the text selection for path.
+If the path starts with “http://”, open the URL in browser.
+Input path can be {relative, full path, URL}.
+Path may have a trailing “:‹n›” that indicates line number. If so, jump to that line number.
+If path does not have a file extension, automatically try with “.el” for elisp files.
+This command is similar to `find-file-at-point' but without prompting for confirmation.
+
+URL `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'"
+  (interactive)
+  (let ((ξpath (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (let (p0 p1 p2)
+                   (setq p0 (point))
+                   ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
+                   (skip-chars-backward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\`")
+                   (setq p1 (point))
+                   (goto-char p0)
+                   (skip-chars-forward "^  \"\t\n`'|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›·。\\'")
+                   (setq p2 (point))
+                   (goto-char p0)
+                   (buffer-substring-no-properties p1 p2)))))
+    (if (string-match-p "\\`https?://" ξpath)
+        (browse-url ξpath)
+      (progn ; not starting “http://”
+        (if (string-match "^\\`\\(.+?\\):\\([0-9]+\\)\\'" ξpath)
+            (progn
+              (let (
+                    (ξfpath (match-string 1 ξpath))
+                    (ξline-num (string-to-number (match-string 2 ξpath))))
+                (if (file-exists-p ξfpath)
+                    (progn
+                      (find-file ξfpath)
+                      (goto-char 1)
+                      (forward-line (1- ξline-num)))
+                  (progn
+                    (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξfpath))
+                      (find-file ξfpath))))))
+          (progn
+            (if (file-exists-p ξpath)
+                (find-file ξpath)
+              (if (file-exists-p (concat ξpath ".el"))
+                  (find-file (concat ξpath ".el"))
+                (when (y-or-n-p (format "file doesn't exist: 「%s」. Create?" ξpath))
+                  (find-file ξpath ))))))))))
+
+(key-chord-define-global "OO" 'xah-open-file-at-cursor)

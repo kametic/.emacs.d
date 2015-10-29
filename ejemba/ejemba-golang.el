@@ -11,23 +11,31 @@
             (setq tab-width 2)
             (setq standard-indent 2)
             (setq indent-tabs-mode -1)
-
+            
             (add-hook 'go-mode-hook
                       (lambda () (add-hook 'before-save-hook 'gofmt-before-save)))
 
             (add-hook 'go-mode-hook 'flycheck-mode)
+            (add-hook 'go-mode-hook 'yas-minor-mode)
+            (add-hook 'go-mode-hook 'highlight-symbol-mode)
+            (add-hook 'go-mode-hook 'highlight-symbol-nav-mode)
 
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
-
+            (add-hook 'go-mode-hook
+                      (lambda () (local-set-key (kbd "C-<tab>") 'ac-complete-yasnippet)))
+            
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c i") 'go-goto-imports)))
 
             (add-hook 'go-mode-hook
-                      (lambda () (local-set-key (kbd "<f3>") 'godef-jump)))
+                      (lambda () (local-set-key (kbd "C-<f3>") 'godef-jump)))
             (add-hook 'go-mode-hook
                       (lambda () (local-set-key (kbd "C-c C-c") 'go-errcheck)))
-
+            
+            (add-hook 'go-mode-hook
+                      (lambda () (progn (set (make-local-variable 'compile-command)
+                                        "go generate && go build -v && go test -v && go vet") )))
             )
 
   :ensure t)
@@ -35,6 +43,9 @@
 ;; Go Oracle
 ;; http://yousefourabi.com/blog/2014/05/emacs-for-go/
 ;;
+(load-file "~/.emacs.d/gotools/src/golang.org/x/tools/cmd/oracle/oracle.el")
+
+(use-package go-projectile :ensure t)
 
 ;; go get -u github.com/nsf/gocode
 (use-package go-eldoc
@@ -47,9 +58,13 @@
 (use-package go-snippets
   :ensure t)
 
+; add go rename
+(load-file "~/.emacs.d/gotools/src/golang.org/x/tools/refactor/rename/rename.el")
+;(add-to-list 'load-path "~/.emacs.d/gotools/src/golang.org/x/tools/refactor/rename/")
+
+
 ;; go get github.com/kisielk/errcheck
-(use-package go-errcheck
-  :ensure t)
+(use-package go-errcheck   :ensure t)
 
 ; go direx
 (use-package popwin ; needed by direx
@@ -85,6 +100,13 @@
 ;  go-play            20120914.... available  Paste to play.golang.org
 ;  go-projectile      20140603.... available  Go add-ons for Projectile
 ;  golint             20140122.... available  lint for the Go source code
+
+(add-to-list 'projectile-globally-ignored-directories "pkg")
+(add-to-list 'projectile-globally-ignored-file-suffixes "*.a")
+
+(add-to-list 'grep-find-ignored-directories "pkg")
+(add-to-list 'grep-find-ignored-files "*.a")
+
 
 (provide 'ejemba-golang)
 

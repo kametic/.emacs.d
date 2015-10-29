@@ -1,11 +1,14 @@
 (setq custom-file "~/.emacs.d/ejemba/emacs-custom.el")
 (load custom-file 'noerror)
 
+
+(set-face-attribute 'default nil :height 85)
+
 (global-set-key [f3] nil )
 ;(global-set-key [f4] nil )
 
 ;; Changes all yes/no questions to y/n type
-;(fset 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; UTF-8 please
 (setq locale-coding-system 'utf-8) ; pretty
@@ -13,6 +16,7 @@
 (set-keyboard-coding-system 'utf-8) ; pretty
 (set-selection-coding-system 'utf-8) ; please
 (prefer-coding-system 'utf-8) ; with sugar on top
+
 ;appearance
 (setq visible-bell t
       inhibit-startup-message t
@@ -21,13 +25,17 @@
       truncate-partial-width-windows nil)
 
 ;; Highlight current line
-;(global-hl-line-mode 1)
+(global-hl-spotlight-mode t)
+(setq hl-spotlight-height 0)
+
 
 ; Split horizontaly => one left one right
 ; http://stackoverflow.com/questions/2081577/setting-emacs-split-to-horizontal
 (setq split-width-threshold 0)
 ;(setq split-height-threshold 100)
 ;(setq split-width-threshold 100)
+
+(setq plantuml-jar-path "~/.emacs.d/plantuml.jar")
 
 ;; Font configuration
 (global-font-lock-mode 1)
@@ -64,7 +72,7 @@
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
-    '(("." . "~/.emacs.d/saves"))    ; don't litter my fs tree
+    '(("." . "~/.backupemacs"))    ; don't litter my fs tree
    delete-old-versions t
    kept-new-versions 6
    kept-old-versions 2
@@ -92,6 +100,10 @@
 
 (bind-key "<RET>" 'newline-and-indent)
 (bind-key "<C-return>" 'newline)
+(bind-key "<pause>" 'kill-this-buffer)
+
+
+
 
 ; Set up keybindings for `windmove'.
 ; Keybindings are of the form MODIFIER-{left,right,up,down}.
@@ -133,6 +145,30 @@
   :ensure t
   )
 
+(use-package clojure-mode :ensure t)
+(use-package clojure-snippets :ensure t)
+
+(use-package cider :ensure t)
+
+
+(use-package highlight-symbol :ensure t)
+
+(use-package bm :ensure t
+
+  :init (progn
+          ;(bm-buffer-persistence t)
+         )
+  
+  :bind (
+         ("<f4>" . helm-bm)
+         ("C-<f4>" . bm-toggle)
+         ("<f5>" . bm-next)
+         ("C-<f5>" . bm-previous)
+         )
+  )
+
+(use-package helm-bm :ensure t)
+
 (use-package winner-mode-enable :ensure t)
 (winner-mode t)
 
@@ -143,7 +179,18 @@
 
 (use-package flycheck :ensure t)
 
-(use-package hydra :ensure t); ++ 
+(use-package hydra :ensure t); ++
+
+(use-package real-auto-save
+
+  :init (progn
+          ;enable auto save in all programming modes
+          ;(add-hook 'prog-mode-hook 'real-auto-save-mode)
+          (setq real-auto-save-interval 5) ;; in seconds
+          )
+
+  :ensure t
+  )
 
 (use-package guide-key
   :init (progn
@@ -173,11 +220,14 @@
   :init (progn
           (projectile-global-mode)
           (setq projectile-enable-caching t)
+          (setq projectile-ignored-directories  '("Godeps" "_output"))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "pkg" "bin") )
           (add-to-list 'guide-key/guide-key-sequence "C-c p")
           )
   :bind (
          ("<f3>" . helm-projectile-switch-project)
          ("<f6>" . helm-projectile)
+         ("<f12>" . helm-projectile)
          ("C-o" . helm-projectile)
          ("C-S-o" . helm-projectile-switch-to-buffer)
          ("C-<f6>" . helm-projectile-switch-to-buffer)
@@ -187,11 +237,69 @@
 (use-package iflipb
   
   :bind (
-         ( "C-œ" . iflipb-next-buffer) 
+         ( "C-²" . iflipb-next-buffer) 
          ( "C-&" . iflipb-previous-buffer) 
          )
-  
+  :init (progn
+          (setq iflipb-wrap-around t)
+          )
+  :config
+  (progn
+; this does not work    (key-chord-define-global "œœ" 'iflipb-next-buffer)
+    (key-chord-define-global "&&" 'iflipb-previous-buffer)
+    )
+
   :ensure t)
+
+
+
+;(use-package sourcegraph
+;  :config (progn
+;            (add-hook 'prog-mode-hook 'sourcegraph-mode)
+;            )
+;  :ensure    t)
+
+
+(use-package company :ensure t)
+
+;(use-package company-emacs-eclim :ensure t)
+
+;(use-package emacs-eclim :ensure t)
+
+;(progn
+;  (custom-set-variables
+;   '(eclim-eclipse-dirs '("/home/ejemba/Apps/eclim/eclipse"))
+;   '(eclim-executable "/home/ejemba/Apps/eclim/eclipse/eclim"))
+;  
+;  (setq eclim-auto-save t
+;        eclim-executable  "/home/ejemba/Apps/eclim/eclipse/eclim" 
+;        eclimd-executable "/home/ejemba/Apps/eclim/eclipse/eclimd" 
+;        eclimd-wait-for-process nil
+;        eclimd-default-workspace "~/workspace/"
+;        help-at-pt-display-when-idle
+;        )
+;
+;  ;; Call the help framework with the settings above & activate
+;  ;; eclim-mode
+;  (help-at-pt-set-timer)
+;  ;; keep consistent which other auto-complete backend.
+;  (custom-set-faces
+;   '(ac-emacs-eclim-candidate-face ((t (:inherit ac-candidate-face))))
+;   '(ac-emacs-eclim-selection-face ((t (:inherit ac-selection-face)))))
+;  
+;  ;; Hook eclim up with auto complete mode
+;  (require 'ac-emacs-eclim-source)
+;  ;; (ac-emacs-eclim-config)
+;  
+;  (require 'eclimd)
+;  
+;  (add-hook 'java-mode-hook
+;            (lambda ()
+;              (add-to-list 'ac-sources 'ac-source-emacs-eclim)
+;              (eclim-mode t))))
+
+
+;; ================================================================================
 
 
 (use-package helm-projectile
@@ -202,21 +310,21 @@
 
 
 ; https://github.com/sigma/magit-gh-pulls
-(use-package magit
-  :bind ("C-c C-g" . magit-status)
-   :config
+;(use-package magit
+;  :bind ("C-c C-g" . magit-status)
+;   :config
+;
+;   (progn
+;     (setq magit-last-seen-setup-instructions "1.4.0")
+;     )
+;  :ensure t)
 
-   (progn
-     (setq magit-last-seen-setup-instructions "1.4.0")
-     )
-  :ensure t)
-
-(use-package magit-gh-pulls
-  :init (progn
-          (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
-          )
-  :ensure t
-  )
+;(use-package magit-gh-pulls
+;  :init (progn
+;          (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+;          )
+;  :ensure t
+;  )
 
 (use-package elisp-slime-nav
   :bind (("C-;" . elisp-slime-nav-find-elisp-thing-at-point)
@@ -241,21 +349,22 @@
 
 ;;; Engine Mode:
 
-(use-package engine-mode
-  :commands (engine-mode defengine)
-  :init (engine-mode t)
-  :config
-  (progn
-    (defengine duckduckgo
-      "https://duckduckgo.com/?q=%s"
-      "C-c e d")
-    (defengine github
-      "https://github.com/search?ref=simplesearch&q=%s"
-      "C-c e g")
-    (defengine wikipedia
-      "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
-      "C-c e w"))
-  :ensure t)
+;(use-package engine-mode
+;  :commands (engine-mode defengine)
+;  :init (engine-mode t)
+;  :config
+;  (progn
+;    (defengine duckduckgo
+;      "https://duckduckgo.com/?q=%s"
+;      "C-c e d")
+;    (defengine github
+;      "https://github.com/search?ref=simplesearch&q=%s"
+;      "C-c e g")
+;    (defengine wikipedia
+;      "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+;      "C-c e w"))
+;  :ensure t)
+;
 
 (use-package recentf
   :init
@@ -337,6 +446,7 @@
   :init (progn
           ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
           (setq helm-swoop-split-direction 'split-window-horizontally)
+          (key-chord-define-global "ff" 'helm-swoop)
           )
   :ensure t)
 
@@ -449,6 +559,8 @@
 ;; HOOKS 
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-mode)
+(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-nav-mode)
 
 ; From http://stackoverflow.com/questions/885793/emacs-error-when-calling-server-start#1566618
 ; to remove directory unsafe message
@@ -461,4 +573,5 @@
 					; on windows.
 
 (server-start)
-
+(toggle-truncate-lines)
+;;; ejemba-configuration.el ends here
