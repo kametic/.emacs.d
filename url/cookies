@@ -1,0 +1,27 @@
+;; Emacs-W3 HTTP cookies file
+;; Automatically generated file!!! DO NOT EDIT!!!
+
+(setq url-cookie-storage
+ '((".google.com"
+  [url-cookie "HttpOnly" nil "26-Jan-2017 08:34:54.00 GMT" "/" ".google.com" nil]
+  [url-cookie "NID" "83=dAxh0HyCupyvRKwM9zuJZRh0-y61QGG0ZPsvnFBpB34baIjREQr1kcG4apQgbtxTeux6tbm2sib577lB35t5HKSpOZIoUVGQTnI3ozEh1mhFFFoapaiJt-WZnNGnDKog" "26-Jan-2017 08:34:54.00 GMT" "/" ".google.com" nil])
+ (".stackoverflow.com"
+  [url-cookie "HttpOnly" nil "01-Jan-2055 00:00:00.00 GMT" "/" ".stackoverflow.com" nil]
+  [url-cookie "prov" "cdc3b71d-d506-a068-52ff-508d4724b1ff" "01-Jan-2055 00:00:00.00 GMT" "/" ".stackoverflow.com" nil])
+ ("www.socketloop.com"
+  [url-cookie "ci_session" "a%3A5%3A%7Bs%3A10%3A%22session_id%22%3Bs%3A32%3A%22c42a88949e7e5653e5fe4ea751b7bf9d%22%3Bs%3A10%3A%22ip_address%22%3Bs%3A13%3A%2252.51.252.130%22%3Bs%3A10%3A%22user_agent%22%3Bs%3A23%3A%22URL%2FEmacs+X-Middleton%2F1%22%3Bs%3A13%3A%22last_activity%22%3Bi%3A1477156956%3Bs%3A9%3A%22user_data%22%3Bs%3A0%3A%22%22%3B%7D1ea377b4384ba944fe5d7c8326373c2ac7d8bcf7" "22-Oct-2016 19:22:36.00 GMT" "/" "www.socketloop.com" nil])
+ ("socketloop.com"
+  [url-cookie "ezouid_22847" "2081805850" "Fri, 12 Oct 2018 17:22:36 UTC" "/" "socketloop.com" nil]
+  [url-cookie "active_template::22847" "pub_site" "Mon, 24 Oct 2016 17:22:36 UTC" "/" "socketloop.com" nil]
+  [url-cookie "ezopvc_22847" "1" "Sat, 22 Oct 2016 20:22:37 UTC" "/" "socketloop.com" nil])
+ (".google.fr"
+  [url-cookie "HttpOnly" nil "26-Jan-2017 08:34:54.00 GMT" "/" ".google.fr" nil]
+  [url-cookie "NID" "83=QpOEXI1HdSfoYLO-sHsQjrir1kRvFYjo3WrxCqC8tp1-qgK0bigfRKifiIU00lUYQ0kAmkC9GS0k7XBA7do185Degxibr94h63gpGN1OKct6K23pDKEtT4MzTUK4n_lH" "26-Jan-2017 08:34:54.00 GMT" "/" ".google.fr" nil]))
+)
+(setq url-cookie-secure-storage
+ 'nil)
+
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; End:

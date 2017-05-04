@@ -17,6 +17,10 @@
 (set-selection-coding-system 'utf-8) ; please
 (prefer-coding-system 'utf-8) ; with sugar on top
 
+;; selection region color
+(set-face-attribute 'region nil :background "#666")
+
+
 ;appearance
 (setq visible-bell t
       inhibit-startup-message t
@@ -103,12 +107,59 @@
 (bind-key "<pause>" 'kill-this-buffer)
 
 
+;(bind-key "<C-x ->" 'split-window-right)
+;(bind-key "<C-x _>" 'split-window-below)
+
+;(global-set-key "C-x -" 'split-window-right)
 
 
 ; Set up keybindings for `windmove'.
 ; Keybindings are of the form MODIFIER-{left,right,up,down}.
 ; Default MODIFIER is 'shift.
 (windmove-default-keybindings)
+
+
+; https://github.com/Kungsgeten/selected.el
+
+
+(use-package epl
+  :ensure t)
+
+
+(use-package framemove
+  :ensure t
+  :config (progn
+            (windmove-default-keybindings)
+            (setq framemove-hook-into-windmove t)
+            )
+  )
+
+
+(use-package selected
+  :ensure t
+  :init  (selected-minor-mode 1)
+  :bind (:map selected-keymap
+              ("q" . selected-off)
+              ("u" . upcase-region)
+              ("t" . string-rectangle)
+              ("k" . kill-rectangle)
+              ("c" . kill-ring-save)
+              ("r" . projectile-replace)
+              ("d" . downcase-region)
+              ("w" . count-words-region)
+              ("m" . apply-macro-to-region-lines)))
+
+;(use-package selected
+;  :commands selected-minor-mode
+;  :config (progn
+;            
+;            (define-key selected-keymap (kbd "q") #'selected-off)
+;            (define-key selected-keymap (kbd "u") #'upcase-region)
+;            (define-key selected-keymap (kbd "d") #'downcase-region)
+;            (define-key selected-keymap (kbd "w") #'count-words-region)
+;            (define-key selected-keymap (kbd "m") #'apply-macro-to-region-lines)
+;            ))
+
 
 ;
 ; USE-PACKAGE section
@@ -125,6 +176,23 @@
 ;  :mode ("\\.py\\'" . python-mode)
 ;  :interpreter ("python" . python-mode))
 
+
+(use-package prodigy
+
+  :config (progn
+
+            (prodigy-define-service
+             :name "Python app"
+             :command "python2"
+             :args '("-m" "SimpleHTTPServer" "6001")
+             :cwd "/tmp"
+             :tags '(work)
+             :kill-signal 'sigkill
+             :kill-process-buffer-on-stop t)
+            )
+  :ensure t
+  )
+
 (use-package key-chord
   :bind ("C-c n k" . key-chord-mode)
   :init (key-chord-mode 1)
@@ -132,26 +200,71 @@
   (progn
     (key-chord-define-global "##" 'server-edit)
     (key-chord-define-global "VV" 'other-window)
+    (key-chord-define-global "OO" 'other-window)
     (key-chord-define-global "KK" 'ido-kill-buffer)
-    (key-chord-define-global "$$" 'ispell-buffer)
+;    (key-chord-define-global "$$" 'ispell-buffer)
     (key-chord-define-global "BB" 'helm-buffers-list)
     ;; Pretty much everything in Enlish word beginning with 'q' is
     ;; follewed the vowel 'u'.  These chords take advantage of that.
     (key-chord-define-global "qq" 'read-only-mode)
     (key-chord-define-global "qs" 'save-buffer)
-    (key-chord-define-global "q0" 'delete-window)
-    (key-chord-define-global "JJ" 'ace-jump-char-mode)
-    (key-chord-define-global "qf" 'flymake-popup-current-error-menu))
+    (key-chord-define-global "$$" 'delete-window)
+    (key-chord-define-global "jj" 'ace-jump-char-mode)
+    (key-chord-define-global "zz" 'zap-to-char)
+    (key-chord-define-global "TT" 'ejemba/showgotests)
+    (key-chord-define-global "FF" 'helm-flycheck)
+    (key-chord-define-global "qf" 'flymake-popup-current-error-menu)
+    (key-chord-define-global "\t\t" 'end-of-visual-line)
+    (key-chord-define-global "==" 'imenus-mode-buffers)
+    (key-chord-define-global "++" 'helm-imenu)
+    (key-chord-define-global "ii" 'ejemba/split-horizontally-other)
+    (key-chord-define-global "__" 'ejemba/split-vertically-other)
+    (key-chord-define-global "§§" 'end-of-buffer)
+    (key-chord-define-global "%%" 'beginning-of-buffer)
+    (key-chord-define-global "àà" 'delete-window))
   :ensure t
   )
 
+;; weather from wttr.in
+(use-package wttrin
+  :ensure t
+  :commands (wttrin)
+  :init
+  (setq wttrin-default-cities '("Poissy"
+                                "Suresnes")))
+
+
+
+;(use-package shackle
+;  :init (shackle-mode t)
+;  :config (progn
+;           (setq shackle-default-rule '(:same t))
+;           )
+;  :ensure t
+;  )
+;
+  
+(use-package super-save
+  :init (super-save-mode 1)
+  :ensure t
+  )
+
+
+;(use-package blank-mode :ensure t)
+
 (use-package clojure-mode :ensure t)
+
 (use-package clojure-snippets :ensure t)
 
 (use-package cider :ensure t)
 
+(use-package highlight-symbol :ensure
+  :init ( progn
+          (add-hook 'prog-mode-hook 'highlight-symbol-mode)
+          (add-hook 'prog-mode-hook 'highlight-symbol-nav-mode)
+          )
 
-(use-package highlight-symbol :ensure t)
+  t)
 
 (use-package bm :ensure t
 
@@ -186,11 +299,13 @@
   :init (progn
           ;enable auto save in all programming modes
           ;(add-hook 'prog-mode-hook 'real-auto-save-mode)
-          (setq real-auto-save-interval 5) ;; in seconds
+          (setq real-auto-save-interval 3) ;; in seconds
           )
 
   :ensure t
   )
+
+
 
 (use-package guide-key
   :init (progn
@@ -206,9 +321,15 @@
 
 (use-package ace-window :ensure t)
 
+(use-package intero
+
+  :ensure t)
+
+
+
 (use-package haskell-mode
   :commands haskell-mode
-  :init ; add extension 
+  :init ; add extension
   (add-to-list 'auto-mode-alist '("\\.l?hs$" . haskell-mode))
   :config ; defer loading
   (progn
@@ -233,6 +354,21 @@
          ("C-<f6>" . helm-projectile-switch-to-buffer)
          )
   :ensure t)
+
+
+(use-package org-projectile
+  :bind (("C-c n p" . org-projectile:project-todo-completing-read)
+         ("C-c c" . org-capture))
+  :config
+  (progn
+    
+    (org-projectile:per-repo)
+    (setq org-projectile:per-repo-filename "todo.org")
+    
+    )
+  :ensure t
+  )
+
 
 (use-package iflipb
   
@@ -386,17 +522,25 @@
   :ensure t)
 
 (use-package auto-complete
-  :init (define-key ac-mode-map (kbd "C-TAB") 'auto-complete)
-  :idle (progn
-         (ac-config-default)
-         (ac-fuzzy-complete)
-         (setq ac-auto-start 4)
-         )
+  :init 
+  (progn
+    
+    (ac-config-default)
+    (ac-fuzzy-complete)
+    (setq ac-auto-start 4)
+    (define-key ac-mode-map (kbd "C-TAB") 'auto-complete)
+    )
   :ensure t)
 
 (use-package org
   :init
+  (progn
     (org-indent-mode t)
+    (setq org-confirm-babel-evaluate nil
+          org-src-fontify-natively t
+          org-src-tab-acts-natively t)
+    )
+  
 
   :ensure t)
 
@@ -406,15 +550,14 @@
 
 ;(use-package imenu+ :ensure t)
 
-(use-package imenu-anywhere
-  :init
-  (key-chord-define-global "MM" 'helm-imenu)
-  :ensure t)
-
+;(use-package imenu-anywhere
+;  :init
+;  (key-chord-define-global "MM" 'helm-imenu)
+;  :ensure t)
+;
 (use-package deft
   :init (progn
 	  ; deft settings
-	  ;(setq deft-directory "E:/Personnel/notes")
 	  (global-set-key [f8] 'deft)
 	  (setq deft-extension "org")
 	  (setq deft-text-mode 'org-mode)
@@ -425,11 +568,14 @@
 (use-package helm
   :bind (("C-x b" . helm-buffers-list)
 	 ("C-x C-f" . helm-find-files)
+	 ;("M-x" . helm-M-x )
+	 ("M-y" . helm-show-kill-ring)
 	 )
   :init  (progn (helm-mode)
                 (setq helm-buffers-fuzzy-matching t)
                 (setq helm-split-window-default-side 'right)
-                ;(fset 'list-packages 'helm-list-elisp-packages)
+                                        ;(fset 'list-packages 'helm-list-elisp-packages)
+                (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
                 )
 
   :ensure t)
@@ -446,7 +592,10 @@
   :init (progn
           ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
           (setq helm-swoop-split-direction 'split-window-horizontally)
-          (key-chord-define-global "ff" 'helm-swoop)
+          ;; removing search on current key word
+          ; From https://github.com/ShingoFukuyama/helm-swoop/issues/25
+          (setq helm-swoop-pre-input-function (lambda () nil))
+          ;(key-chord-define-global "ff" 'helm-swoop)
           )
   :ensure t)
 
@@ -559,8 +708,13 @@
 ;; HOOKS 
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-mode)
-(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-nav-mode)
+;(add-hook 'prog-mode-hook 'real-auto-save-mode)
+(add-hook 'prog-mode-hook 'subword-mode)
+;(add-hook 'prog-mode-hook 'selected-minor-mode)
+;(add-hook 'prog-mode-hook 'glasses-mode)
+
+                                        ;(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-mode)
+;(add-hook 'emacs-lisp-mode-hook 'highlight-symbol-nav-mode)
 
 ; From http://stackoverflow.com/questions/885793/emacs-error-when-calling-server-start#1566618
 ; to remove directory unsafe message
@@ -572,6 +726,17 @@
 					; ~/.emacs.d/server is unsafe"
 					; on windows.
 
+
+
+
 (server-start)
 (toggle-truncate-lines)
+
+(defun ejemba-load-org-beautify-theme ()
+  "manually loading the org-theme"
+
+  (load-file "" )
+  
+  )
+
 ;;; ejemba-configuration.el ends here

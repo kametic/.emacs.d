@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: parsfn
+# key: pfn
+# binding: direct-keybinding
+# --
+// Pars$1 is the function that will handle parsing of $1
+func Pars$1 (cursor *TokenCursor , *ParsContext interface{}) (*ParsContext , ParsFn, error) {
+   $0
+}

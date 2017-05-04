@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Visit Grammar
+# key: viz
+# binding: direct-keybinding
+# --
+func (gv *grammarVisitor) Visit$1($2 $1) {
+   fn , bool := gv.implems["$1"]
+   if bool {
+      fn($2)
+   }
+}

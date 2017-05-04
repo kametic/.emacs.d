@@ -13,6 +13,27 @@
 
 ;C-a			;; 
 ;TAB			;; 
+(defun ejemba/showgotests ()
+  "Showing Rats Test Windows in View Mode"
+  (interactive)
+  (rats-run-test-under-point)
+  (view-buffer "*rats-test*"))
+
+
+(defun ejemba/split-horizontally-other ()
+  "Shortcut to split H then other window"
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1)
+  )
+
+(defun ejemba/split-vertically-other ()
+  "Shortcut to split V then other window"
+  (interactive)
+  (split-window-vertically)
+  (other-window 1)
+  )
+
 
 (defun ejemba/tab ()
   "Tabulation"
@@ -62,7 +83,7 @@
   )
 
 
-(require 'hydra)
+;(require 'hydra)
 (defhydra hydra-zoom (global-map "<f2>")
   "zoom"
   ("=" text-scale-increase "in")
@@ -159,6 +180,19 @@ there's a region, all lines that region covers will be duplicated."
       (interactive)
       (switch-to-buffer (other-buffer (current-buffer) 1)))
 
+(setq initial-major-mode (quote text-mode))
+
+(defun xah-new-empty-buffer ()
+  "Open a new empty buffer.
+URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
+Version 2015-06-12"
+  (interactive)
+  (let ((-buf (generate-new-buffer "untitled")))
+    (switch-to-buffer -buf)
+    (funcall (and initial-major-mode))
+    (setq buffer-offer-save t)))
+
+
 ;(setq split-window-preferred-function 'split-window-prefer-horizonally)
 
 ;replacing (split-window-sensibly) ;
@@ -167,10 +201,11 @@ there's a region, all lines that region covers will be duplicated."
 (key-chord-define-global "UU" 'ejemba/move-line-up)
 
 (key-chord-define-global "ww" 'save-buffer )
+(key-chord-define-global "NN" 'xah-new-empty-buffer )
 (key-chord-define-global "éé" 'duplicate-current-line-or-region )
 (key-chord-define-global "aa" 'beginning-of-line-text )
-(key-chord-define-global "ee" 'end-of-visual-line )
-(key-chord-define-global "mm" 'set-mark-command)
+(key-chord-define-global "EE" 'end-of-visual-line )
+(key-chord-define-global "MM" 'set-mark-command)
 
 (key-chord-define-global "JJ" 'left-char)
 (key-chord-define-global "LL" 'right-char)
@@ -184,7 +219,7 @@ there's a region, all lines that region covers will be duplicated."
 (global-set-key (kbd "<C-S-return>") 'ejemba/open-line-above)
 
 (bind-key "<C-d>" 'ejemba/duplicate)
-(key-chord-define-global "--" 'kill-whole-line)
+(key-chord-define-global "kk" 'kill-whole-line)
 
 (bind-key "TAB" 'ejemba/tab)
 (bind-key "C-TAB" 'switch-to-previous-buffer)

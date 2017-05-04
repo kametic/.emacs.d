@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: begin_go
+# key: begingo
+# --
+#+begin_src go
+$0
+#+end_src 

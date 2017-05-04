@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: forlist
+# key: forlist
+# binding: direct-keybinding
+# --
+for $1 := $2.Front(); $1 != nil; $1 = $1.Next() {
+		$1.Value.$0
+}
