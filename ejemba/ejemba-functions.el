@@ -1,3 +1,8 @@
+;;; ejemba-function --- blah
+;;; Commentary:
+;;; Code: blah
+
+
 (defun ejemba/syntax-color-hex ()
   "Syntax color hex color spec such as 「#ffdead」 in current buffer."
   (interactive)
@@ -14,21 +19,21 @@
 ;C-a			;; 
 ;TAB			;; 
 (defun ejemba/showgotests ()
-  "Showing Rats Test Windows in View Mode"
+  "Showing Rats Test Windows in View Mode."
   (interactive)
   (rats-run-test-under-point)
   (view-buffer "*rats-test*"))
 
 
 (defun ejemba/split-horizontally-other ()
-  "Shortcut to split H then other window"
+  "Shortcut to split H then other window."
   (interactive)
   (split-window-horizontally)
   (other-window 1)
   )
 
 (defun ejemba/split-vertically-other ()
-  "Shortcut to split V then other window"
+  "Shortcut to split V then other window."
   (interactive)
   (split-window-vertically)
   (other-window 1)
@@ -36,7 +41,7 @@
 
 
 (defun ejemba/tab ()
-  "Tabulation"
+  "Tabulation."
   (interactive)
   (move-beginning-of-line 1)
   (indent-for-tab-command)
@@ -72,8 +77,7 @@
   (indent-for-tab-command))
 
 (defun split-window-prefer-horizonally (window)
-  "If there's only one window (excluding any possibly active
-         minibuffer), then split the current window horizontally."
+  "If there's only one window (excluding any possibly active. minibuffer), then split the current window horizontally."
   (split-window-right window)
 ;  (if (and (one-window-p t)
 ;           (not (active-minibuffer-window)))

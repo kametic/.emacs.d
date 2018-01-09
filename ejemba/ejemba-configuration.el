@@ -9,7 +9,7 @@
 
 ;; Changes all yes/no questions to y/n type
 (fset 'yes-or-no-p 'y-or-n-p)
-
+                                        
 ;; UTF-8 please
 (setq locale-coding-system 'utf-8) ; pretty
 (set-terminal-coding-system 'utf-8) ; pretty
@@ -166,7 +166,7 @@
 ; :init is always executed but :config will happen after
 ; :bind, commands: are defered
 ;  usage of
-;
+                                        ;
 ;(use-package ruby-mode
 ;  :mode "\\.rb\\'"
 ;  :interpreter "ruby")
@@ -252,7 +252,24 @@
 
 ;(use-package blank-mode :ensure t)
 
-(use-package clojure-mode :ensure t)
+(use-package clojure-mode :ensure t
+  :init (progn
+          (add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojure-mode))
+          (add-hook 'clojure-mode-hook
+            '(lambda ()
+               ;; Hoplon functions and macros
+               (dolist (pair '((page . 'defun)
+                               (loop-tpl . 'defun)
+                               (if-tpl . '1)
+                               (for-tpl . '1)
+                               (case-tpl . '1)
+                               (cond-tpl . 'defun)))
+                 (put-clojure-indent (car pair)
+                                     (car (last pair))))))
+          )
+  )
+
+;(use-package clojure-script-mode :ensure t)
 
 (use-package clojure-snippets :ensure t)
 
@@ -310,7 +327,7 @@
 (use-package guide-key
   :init (progn
           (setq guide-key/guide-key-sequence '("C-c" "C-c ESC" "C-c /" "C-c n" "C-c x"
-                                               "C-x"  "C-x r" "C-x 4" "<f2>"))
+                                               "C-x"  "C-x r" "C-x 4" "<f2>" "C-c !"))
           (guide-key-mode 1))
   :ensure t)
 
@@ -477,10 +494,10 @@
 (use-package  icicles
   :ensure t)
 
-;(use-package  yasnippet
-;  :idle
-;  (yas-global-mode 1)
-;  :ensure t)
+(use-package  yasnippet
+  :idle
+  (yas-global-mode 1)
+  :ensure t)
 
 
 ;;; Engine Mode:
@@ -679,7 +696,9 @@
 (use-package paredit
 ;  :mode ("\\.el" . paredit-mode)
   :init (progn
-	  (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
+	  (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)) )
+          (add-hook 'clojure-mode-hook (lambda () (paredit-mode 1)) )
+          
  
 	  )
   :ensure t)

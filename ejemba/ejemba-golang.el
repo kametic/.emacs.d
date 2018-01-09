@@ -28,7 +28,6 @@
 
 
             (setq gofmt-command "/home/ejemba/.emacs.d/gotools/bin/goimports")
-
             
 
             ;(setq gofmt-command (cond
@@ -39,7 +38,6 @@
             ;(setq gofmt-args "-tabs=false -tabwidth=2" )
             
             
-
             (add-hook 'go-mode-hook 'rats-mode)
             (add-hook 'go-mode-hook 'flycheck-mode)
             (add-hook 'go-mode-hook 'yas-minor-mode)
@@ -111,6 +109,16 @@
 
 (use-package go-snippets
   :ensure t)
+
+
+(use-package company-go
+  :config
+  (add-hook 'go-mode-hook 'company-mode)
+  (add-to-list 'company-backends 'company-go))
+
+(use-package go-gopath)
+
+
 
 ; add go rename
 (load-file "~/.emacs.d/gotools/src/golang.org/x/tools/refactor/rename/rename.el")

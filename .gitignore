@@ -15,6 +15,7 @@
 /session*
 /var
 
+/goism
 /gotools
 /elpa_
 

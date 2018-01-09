@@ -66,6 +66,8 @@
 ;(load "ejemba-proxy")
 (load "ejemba-configuration")
 (load "ejemba-golang")
+(load "go-expanderr")
+
 (load "ejemba-web")
 (load "ejemba-functions")
 (load "ejemba-java")
